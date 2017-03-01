@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace C_Sharp_Eductional_Practice
 {
-    class Program
+    class Arrays
     {
         static void Main(string[] args)
         {

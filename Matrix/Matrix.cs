@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Matrix
 {
-    class Program
+    class Matrix
     {
         public static int[,] makeMagicMatrix(int n)
         {
@@ -113,7 +113,7 @@ namespace Matrix
         static void Main(string[] args)
         {
             {
-                int s = 20;
+                int s = 5;
                 var m = makeMatrix(s);
                 printMatrix(m, s, s);
                 Console.ReadKey();
