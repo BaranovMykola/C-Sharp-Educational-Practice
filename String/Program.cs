@@ -9,28 +9,25 @@ namespace String
 {
     class Program
     {
-        public static int getCountSpecificGroups(string str, char ch)
+        string groupRegex = @"[^0-9\+\-\=\*]";
+        public int getCountSpecificGroups(string str, char ch)
         {
             string t;
             int count = -2;
             do
             {
-                t = Regex.Match(str, @"[^0-9\+\-\=\*][^0-9\+\-\=\*]*" + ch+ @"[0-9\+\-\=\*]").Value;
-                //Console.WriteLine(t);
-                //Console.WriteLine(str.IndexOf(t) + t.Length);
+                t = Regex.Match(str, groupRegex+groupRegex+"*"+ch+@"[0-9\+\-\=\*]").Value;
                 str = str.Remove(0, str.IndexOf(t) + t.Length);
-                //Console.WriteLine(str);
-                Console.WriteLine("{0} ", t);
+                Console.Write("{0} ", t);
                 ++count;
             }
             while (t.Length > 0);
             Console.WriteLine("count: {0}", count);
             return 0;
         }
-        public static char getFirstGroupLastChar(string str)
+        public char getFirstGroupLastChar(string str)
         {
-            str = Regex.Match(str, @"[^0-9\+\-\=\*][^0-9\+\-\=\*]+[^0-9\+\-\=\*]").Value;
-            //Console.WriteLine(str);
+            str = Regex.Match(str, groupRegex+groupRegex+"+"+groupRegex).Value;
             return getLastLetter(str);
         }
         public static char getLastLetter(string group)
@@ -40,9 +37,11 @@ namespace String
         }
         static void Main(string[] args)
         {
-            string str = "0kkk0bbk9ccc7gfk0kke2gtk2";
-            char ch = getFirstGroupLastChar(str);
-            getCountSpecificGroups(str, ch);
+            Program pr = new Program();
+            string str = "0kkk0bbk9ccc=gfk0kke2gtk2";
+            Console.WriteLine(str);
+            char ch = pr.getFirstGroupLastChar(str);
+            pr.getCountSpecificGroups(str, ch);
             Console.ReadKey();
         }
     }
