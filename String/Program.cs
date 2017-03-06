@@ -12,18 +12,20 @@ namespace String
         string groupRegex = @"[^0-9\+\-\=\*]";
         public int getCountSpecificGroups(string str, char ch)
         {
-            string t;
-            int count = -2;
-            do
-            {
-                t = Regex.Match(str, groupRegex+groupRegex+"*"+ch+@"[0-9\+\-\=\*]").Value;
-                str = str.Remove(0, str.IndexOf(t) + t.Length);
-                Console.Write("{0} ", t);
-                ++count;
-            }
-            while (t.Length > 0);
-            Console.WriteLine("count: {0}", count);
-            return 0;
+            //string t;
+            //int count = -2;
+            //do
+            //{
+            //    t = Regex.Match(str, groupRegex+groupRegex+"*"+ch+@"[0-9\+\-\=\*]").Value;
+            //    str = str.Remove(0, str.IndexOf(t) + t.Length);
+            //    Console.Write("{0} ", t);
+            //    ++count;
+            //}
+            //while (t.Length > 0);
+            //Console.WriteLine("count: {0}", count);
+            int count = Regex.Matches(str, groupRegex + groupRegex + "*" + ch + @"[0-9\+\-\=\*]").Count - 1;
+            Console.WriteLine("count {0}", count);
+            return count;
         }
         public char getFirstGroupLastChar(string str)
         {
