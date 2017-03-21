@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace String
 {
-    class Program
+    class String
     {
         string groupRegex = @"[^0-9\+\-\=\*]";
         public int getCountSpecificGroups(string str, char ch)
@@ -39,7 +39,7 @@ namespace String
         }
         static void Main(string[] args)
         {
-            Program pr = new Program();
+            String pr = new String();
             string str = "0kkk0bbk9ccc=gfk0kke2gtk2";
             Console.WriteLine(str);
             char ch = pr.getFirstGroupLastChar(str);

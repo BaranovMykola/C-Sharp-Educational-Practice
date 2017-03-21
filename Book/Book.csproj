@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DD214717-8746-4A37-97FD-FA23B8E1F070}</ProjectGuid>
+    <ProjectGuid>{E23381CD-B45A-4EB9-B882-FBBFE658EF9B}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>String</RootNamespace>
-    <AssemblyName>String</AssemblyName>
+    <RootNamespace>Book</RootNamespace>
+    <AssemblyName>Book</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -43,7 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="String.cs" />
+    <Compile Include="Book.cs" />
+    <Compile Include="BookProgram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
