@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "String", "String\String.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Book", "Book\Book.csproj", "{E23381CD-B45A-4EB9-B882-FBBFE658EF9B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HumanInheritance", "HumanInheritance\HumanInheritance.csproj", "{6783ABF4-4F79-410E-B0BA-CBC2793F6B62}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,18 @@ Global
 		{E23381CD-B45A-4EB9-B882-FBBFE658EF9B}.Release|x64.Build.0 = Release|Any CPU
 		{E23381CD-B45A-4EB9-B882-FBBFE658EF9B}.Release|x86.ActiveCfg = Release|Any CPU
 		{E23381CD-B45A-4EB9-B882-FBBFE658EF9B}.Release|x86.Build.0 = Release|Any CPU
+		{6783ABF4-4F79-410E-B0BA-CBC2793F6B62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6783ABF4-4F79-410E-B0BA-CBC2793F6B62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6783ABF4-4F79-410E-B0BA-CBC2793F6B62}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6783ABF4-4F79-410E-B0BA-CBC2793F6B62}.Debug|x64.Build.0 = Debug|Any CPU
+		{6783ABF4-4F79-410E-B0BA-CBC2793F6B62}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6783ABF4-4F79-410E-B0BA-CBC2793F6B62}.Debug|x86.Build.0 = Debug|Any CPU
+		{6783ABF4-4F79-410E-B0BA-CBC2793F6B62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6783ABF4-4F79-410E-B0BA-CBC2793F6B62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6783ABF4-4F79-410E-B0BA-CBC2793F6B62}.Release|x64.ActiveCfg = Release|Any CPU
+		{6783ABF4-4F79-410E-B0BA-CBC2793F6B62}.Release|x64.Build.0 = Release|Any CPU
+		{6783ABF4-4F79-410E-B0BA-CBC2793F6B62}.Release|x86.ActiveCfg = Release|Any CPU
+		{6783ABF4-4F79-410E-B0BA-CBC2793F6B62}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

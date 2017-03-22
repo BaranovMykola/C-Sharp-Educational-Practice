@@ -52,7 +52,11 @@ namespace Book
                     }
                     if (commands[0] == "find")
                     {
-                        var matches = Book.findAuthor(books, commands[1]);
+                        IEnumerable<Book> matches = Book.findAuthor(books, commands[1]);
+                        if(matches.ToArray<Book>().Length == 0)
+                        {
+                            Console.WriteLine("Nothing found");
+                        }
                         foreach(var i in matches)
                         {
                             Console.WriteLine(i);
