@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Collections;
 
 namespace HumanInheritance
 {
@@ -11,27 +12,41 @@ namespace HumanInheritance
     {
         static void Main(string[] args)
         {
-            string[] data = File.ReadAllLines("Human.txt");
-            Human[] lst = new Human[data.Length];
-            for (int i = 0;i<data.Length;++i)
+            Patient pat = new Patient("name", DateTime.Now, 0);
+            Doctor doc = new Doctor("doc", "Strong");
+            IPrint[] humans = { pat, doc };
+            foreach (var item in humans)
             {
-                string[] line = data[i].Split(' ');
-                if(line[0] == "Medic")
-                {
-                    lst[i] = new Doctor(line[1], new DateTime(int.Parse(line[2]), 1, 1), line[4], int.Parse(line[3]));
-                }
-                else if(line[0] == "Patient")
-                {
-                    Doctor pDoc = new Doctor(line[4], new DateTime(int.Parse(line[5]), 1, 1), line[7], int.Parse(line[6]));
-                    Patient p = new Patient(line[1], new DateTime(int.Parse(line[2]), 1, 1), int.Parse(line[3]), pDoc);
-                    lst[i] = p;
-                }
-                else
-                {
-                    Console.WriteLine("eeror");
-                }
-                Console.WriteLine(lst[i]);
+                item.Print();
             }
+            Console.WriteLine();
+            Console.WriteLine();
+
+            int[] arr = { 1, 2, 3, 4, 5, 6 };
+
+            Vector.Vector vec = new Vector.Vector(arr);
+            vec.Add(3.4);
+            vec.Add(pat);
+            vec.Add(doc);
+            vec.Add((pat as INamedAndCopy<Patient>).Copy());
+            pat.Name = "CHANGE NAME";
+
+            var integ = vec.GetTypeOf<Human>();
+            foreach (var item in integ)
+            {
+                Console.WriteLine(item);
+            }
+
+            try
+            {
+                var bio = doc.Copy();
+                Console.WriteLine("Type of simple Copy(): {0}", (bio is Human) ? "Human" : "Gumanoid");
+            }
+            catch (NotImplementedException)
+            {
+                Console.WriteLine("Copying human is forbiden by law");
+            }
+
             Console.ReadKey();
         }
     }

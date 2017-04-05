@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Book", "Book\Book.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HumanInheritance", "HumanInheritance\HumanInheritance.csproj", "{6783ABF4-4F79-410E-B0BA-CBC2793F6B62}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vector", "Vector\Vector.csproj", "{AADD9ECF-949F-41E1-AFE9-241749972338}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{6783ABF4-4F79-410E-B0BA-CBC2793F6B62}.Release|x64.Build.0 = Release|Any CPU
 		{6783ABF4-4F79-410E-B0BA-CBC2793F6B62}.Release|x86.ActiveCfg = Release|Any CPU
 		{6783ABF4-4F79-410E-B0BA-CBC2793F6B62}.Release|x86.Build.0 = Release|Any CPU
+		{AADD9ECF-949F-41E1-AFE9-241749972338}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AADD9ECF-949F-41E1-AFE9-241749972338}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AADD9ECF-949F-41E1-AFE9-241749972338}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AADD9ECF-949F-41E1-AFE9-241749972338}.Debug|x64.Build.0 = Debug|Any CPU
+		{AADD9ECF-949F-41E1-AFE9-241749972338}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AADD9ECF-949F-41E1-AFE9-241749972338}.Debug|x86.Build.0 = Debug|Any CPU
+		{AADD9ECF-949F-41E1-AFE9-241749972338}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AADD9ECF-949F-41E1-AFE9-241749972338}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AADD9ECF-949F-41E1-AFE9-241749972338}.Release|x64.ActiveCfg = Release|Any CPU
+		{AADD9ECF-949F-41E1-AFE9-241749972338}.Release|x64.Build.0 = Release|Any CPU
+		{AADD9ECF-949F-41E1-AFE9-241749972338}.Release|x86.ActiveCfg = Release|Any CPU
+		{AADD9ECF-949F-41E1-AFE9-241749972338}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

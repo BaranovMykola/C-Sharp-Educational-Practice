@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6783ABF4-4F79-410E-B0BA-CBC2793F6B62}</ProjectGuid>
+    <ProjectGuid>{AADD9ECF-949F-41E1-AFE9-241749972338}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HumanInheritance</RootNamespace>
-    <AssemblyName>HumanInheritance</AssemblyName>
+    <RootNamespace>Vector</RootNamespace>
+    <AssemblyName>Vector</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -43,10 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Human.cs" />
-    <Compile Include="HumanInheritanceProgramm.cs" />
-    <Compile Include="HumanInterface.cs" />
-    <Compile Include="HumanVector.cs" />
+    <Compile Include="Vector.cs" />
+    <Compile Include="VectorProgram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
