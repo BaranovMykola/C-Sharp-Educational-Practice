@@ -4,11 +4,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace HumanInheritance
 {
-    abstract class Human : IComparable<Human>, INamedAndCopy<Human>, IPrint
+    public abstract class Human : IComparable<Human>, INamedAndCopy<Human>, IPrint
     {
+        public class HumanComparerName : IComparer
+        {
+            public int Compare(object x, object y)
+            {
+                if(x == null)
+                {
+                    if (y == null) return 0;
+                    return -1;
+                }
+                if (y == null) return 1;
+                if((x as Human)?.Name == null)
+                {
+                    if ((y as Human)?.Name == null) return 0;
+                    return -1;
+                }
+                if ((y as Human)?.Name == null) return 1;
+                return (x as Human).Name.CompareTo((y as Human).Name);
+            }
+        }
         public string Name { get; set; }
         public DateTime Born { get; set; }
         public int Id { get; set; }
@@ -49,7 +69,7 @@ namespace HumanInheritance
         }
     }
 
-    sealed class Doctor : Human, IComparable, INamedAndCopy<Doctor>, IPrint
+    public sealed class Doctor : Human, IComparable, INamedAndCopy<Doctor>, IPrint
     {
         public string Educational { get; set; }
 
@@ -79,9 +99,28 @@ namespace HumanInheritance
         {
             Console.WriteLine(this);
         }
+
+        public static Doctor Parse(XElement source)
+        {
+            return new Doctor((string)source.Element("Name"),
+                        DateTime.Parse((string)source.Element("Born")),
+                        (string)source.Element("Educational"),
+                        int.Parse((string)source.Element("ID")));
+        }
+
+        public XElement ToXElement(string name)
+        {
+            return new XElement
+                        (name,
+                            new XElement("Name", Name),
+                            new XElement("Educational", Educational),
+                            new XElement("ID", Id),
+                            new XElement("Born", Born)
+                        );
+        }
     }
 
-    sealed class Patient : Human, INamedAndCopy<Patient>, IPrint
+    public sealed class Patient : Human, INamedAndCopy<Patient>, IPrint
     {
         public class DoctorName : IComparer
         {
@@ -120,5 +159,24 @@ namespace HumanInheritance
         Patient INamedAndCopy<Patient>.Copy() => new Patient(Name, Born, Id, Medic);
 
         public new void Print() => Console.WriteLine(this);
+
+        public static Patient Parse(XElement source)
+        {
+            return new Patient((string)source.Element("Name"),
+                        DateTime.Parse((string)source.Element("Born")),
+                        int.Parse((string)source.Element("ID")),
+                        Doctor.Parse(source.Element("Medic")));
+        }
+
+        public XElement ToXElement(string name)
+        {
+            return new XElement
+                        (name,
+                            new XElement("Name", Name),
+                            new XElement("ID", Id),
+                            new XElement("Born", Born),
+                            Medic.ToXElement("Medic")
+                        );
+        }
     }
 }

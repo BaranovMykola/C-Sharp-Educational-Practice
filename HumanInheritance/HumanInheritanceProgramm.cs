@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Collections;
+using System.Xml.Linq;
+using System.Xml.XPath;
+using System.Xml;
 
 namespace HumanInheritance
 {
@@ -12,41 +15,50 @@ namespace HumanInheritance
     {
         static void Main(string[] args)
         {
-            Patient pat = new Patient("name", DateTime.Now, 0);
-            Doctor doc = new Doctor("doc", "Strong");
-            IPrint[] humans = { pat, doc };
-            foreach (var item in humans)
-            {
-                item.Print();
-            }
-            Console.WriteLine();
-            Console.WriteLine();
-
-            int[] arr = { 1, 2, 3, 4, 5, 6 };
-
-            Vector.Vector vec = new Vector.Vector(arr);
-            vec.Add(3.4);
-            vec.Add(pat);
-            vec.Add(doc);
-            vec.Add((pat as INamedAndCopy<Patient>).Copy());
-            pat.Name = "CHANGE NAME";
-
-            var integ = vec.GetTypeOf<Human>();
-            foreach (var item in integ)
-            {
-                Console.WriteLine(item);
-            }
-
             try
             {
-                var bio = doc.Copy();
-                Console.WriteLine("Type of simple Copy(): {0}", (bio is Human) ? "Human" : "Gumanoid");
-            }
-            catch (NotImplementedException)
-            {
-                Console.WriteLine("Copying human is forbiden by law");
-            }
+                Vector.Vector<Human> vec = new Vector.Vector<Human>();
+                Console.Write("Open file: ");
+                vec.PopulateHuman(Console.ReadLine());
+                Console.WriteLine("Sorting...");
+                vec.Sort(new Human.HumanComparerName());
+                Console.WriteLine("Finding last element...");
+                Human last = null;
 
+                foreach (var item in vec)
+                {
+                    Console.WriteLine(item);
+                    last = item as Human;
+                }
+                vec.WriteHuman("FILE.txt");
+                Console.WriteLine();
+                Console.WriteLine("Find {0} in collection: ", last);
+                foreach (var item in vec.Find(last))
+                {
+                    Console.WriteLine(item);
+                }
+                Vector.Vector<int> vecInt = new Vector.Vector<int>();
+                vecInt.PopulateHuman("");
+                
+            }
+            catch (ArgumentNullException error)
+            {
+                Console.WriteLine();
+                Console.WriteLine("Fatal exception:");
+                Console.WriteLine(error.Message);
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error.GetType());
+                Console.WriteLine();
+                Console.WriteLine("Some error occured:");
+                Console.WriteLine(error.Message);
+                var data = error.Data;
+                foreach (var item in data)
+                {
+                    Console.WriteLine(item);
+                }
+            }
             Console.ReadKey();
         }
     }
