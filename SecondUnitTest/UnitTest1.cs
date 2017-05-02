@@ -6,7 +6,7 @@ using System.Xml;
 namespace SecondUnitTest
 {
     [TestClass]
-    public class UnitTest1
+    public class UnitTest1a
     {
         [ExpectedException(typeof(ApplicationException))]
         [TestMethod]
@@ -41,7 +41,22 @@ namespace SecondUnitTest
         public void FindNull()
         {
             Vector.Vector<Human> vec = new Vector.Vector<Human>();
-            vec.Find(null);
+            foreach(var item in vec.Find(null));
+        }
+        [ExpectedException(typeof(NotImplementedException))]
+        [TestMethod]
+        public void CloneHuman()
+        {
+            Patient p = new Patient("Podopitniy_Krolik", DateTime.Now, 001);
+            (p as Human).Copy();
+        }
+        [TestMethod]
+        public void KillerTest()
+        {
+            Patient p = new Patient("Victim", DateTime.Now, 001, new Doctor("Killer", DateTime.Parse("1990.04.21"), "<none>", 002));
+            string heWasYoung = (p.Name).Clone() as string;
+            p.kill();
+            StringAssert.Equals(string.Format("†{0}†", heWasYoung), p.Name);
         }
     }
 }

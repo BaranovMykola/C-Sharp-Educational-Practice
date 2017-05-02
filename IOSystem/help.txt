@@ -1,0 +1,5 @@
+﻿C# Educational Practise | IOSystem project
+Commands:
+help - Vivew help
+cd [arg] - Locate to [arg]
+pwd - Show location

@@ -1,0 +1,10 @@
+1.jpg d:\site\1.jpg
+qt_final.pdf d:\studying\programming\qt\books\qt_final.pdf
+.config d:\temp\.config
+111 d:\temp\111
+App.config d:\temp\App.config
+fileInfoLog.txt d:\temp\fileInfoLog.txt
+FileInfoWrapper.cs d:\temp\FileInfoWrapper.cs
+help.txt d:\temp\help.txt
+IOSystem.csproj d:\temp\IOSystem.csproj
+Program.cs d:\temp\Program.cs

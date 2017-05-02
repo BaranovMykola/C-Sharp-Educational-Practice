@@ -27,6 +27,7 @@ namespace HumanInheritance
 
                 foreach (var item in vec)
                 {
+                    (item as Human)?.kill();
                     Console.WriteLine(item);
                     last = item as Human;
                 }
