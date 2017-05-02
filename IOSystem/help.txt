@@ -2,4 +2,17 @@
 Commands:
 help - Vivew help
 cd [arg] - Locate to [arg]
+	сd ../{x times} - up to x directories
+	cd . - clear location
 pwd - Show location
+push [arg] - push file(s). Support regex
+remove [arg] - remove file
+find [args] - find files matches parameters
+	[args]  -n=$name$ - name, support regex
+			-e=$extension$ - extension, support regex
+			-d=[args] - data
+				[args] -d=$day$ - day
+				[args] -m=$month$ - month
+				[args] -y=$year$ - year
+show (-d) - show file log (sorted by directory)
+exit - exits and save all information
