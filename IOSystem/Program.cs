@@ -131,16 +131,22 @@ namespace IOSystem
             var files = Directory.GetFiles(location, file, System.IO.SearchOption.TopDirectoryOnly);
             foreach (var item in files)
             {
-                Console.WriteLine(item);
                 FileInfo fileInfo = new FileInfo(item);
-                list.Add(fileInfo.Name, new FileInfoWrapper(item));
+                if (!list.ContainsKey(fileInfo.Name))
+                {
+                    Console.WriteLine(item);
+                    list.Add(fileInfo.Name, new FileInfoWrapper(item));
+                }
             }
 
         }
-        public static void Show()
+        public static void Show(string sort)
         {
             var toSort = list.ToList<KeyValuePair<string, FileInfoWrapper>>();
-            toSort.Sort((pair1, pair2) => pair1.Value.Directory.CompareTo(pair2.Value.Directory));
+            if (Regex.Match(sort, "-d").Success)
+            {
+                toSort.Sort((pair1, pair2) => pair1.Value.Directory.CompareTo(pair2.Value.Directory));
+            }
             foreach (var item in toSort)
             {
                 Console.WriteLine(string.Format("{0,28}\n{1}", item.Key, item.Value));
@@ -177,6 +183,7 @@ namespace IOSystem
             }
             Console.WriteLine("'{0}' {1}", key, message);
         }
+
         public static void Find(string param)
         {
             //-n=1.jpg -t=.pdf -d=-y=2017
@@ -188,7 +195,7 @@ namespace IOSystem
                 result = FindByName(nameParam, result);
             }
 
-            string extensionParam = Regex.Match(param, @"-e=[\w.]+").Value;
+            string extensionParam = Regex.Match(param, @"-e=[^\s]+").Value;
             if (!string.IsNullOrEmpty(extensionParam))
             {
                 result = FindByExtension(extensionParam, result);
@@ -219,8 +226,8 @@ namespace IOSystem
         }
         private static Dictionary<string, FileInfoWrapper> FindByExtension(string param, Dictionary<string, FileInfoWrapper> source)
         {
-            string type = ClearParam(param);
-            var result = source.Where(n => n.Value.Extension == type).ToDictionary(k => k.Key, k => k.Value);
+            string type = GetParam(param, 'e');
+            var result = source.Where(n => Regex.Match(n.Value.Extension, type).Success).ToDictionary(k => k.Key, k => k.Value);
             return result;
         }
         private static Dictionary<string, FileInfoWrapper> FindByData(string param, Dictionary<string, FileInfoWrapper> source)
@@ -242,14 +249,14 @@ namespace IOSystem
 
         private static string GetParam(string param, char key)
         {
-            string result = Regex.Match(param, @"-" + key + @"=[^\s^-]+").Value;
+            string result = Regex.Match(param, @"-" + key + @"=[^\s-]+").Value;
             string bareResult = result.Remove(0, result.IndexOf('=') + 1);
             return bareResult;
         }
 
         public static void Command()
         {
-            Console.Write(">> ");
+            Console.Write("{0} >> ", location);
             try
             {
                 string command = Console.ReadLine();
@@ -271,7 +278,7 @@ namespace IOSystem
                         Push(second);
                         break;
                     case "show":
-                        Show();
+                        Show(second);
                         break;
                     case "exit":
                         Exit();
