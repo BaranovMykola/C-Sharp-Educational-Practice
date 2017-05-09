@@ -201,6 +201,12 @@ namespace IOSystem
                 result = FindByExtension(extensionParam, result);
             }
 
+            string atributeParam = Regex.Match(param, @"-a=[^\s]+").Value;
+            if (!string.IsNullOrEmpty(atributeParam))
+            {
+                result = FindByAtribute(atributeParam, result);
+            }
+
             string dataParam = Regex.Match(param, @"-d=[\w.\-=]+").Value;
             if(!string.IsNullOrEmpty(dataParam))
             {
@@ -217,6 +223,12 @@ namespace IOSystem
             string name = Regex.Match(param, @"=[\w.]*").Value;
             name = name.Remove(0, 1);
             return name;
+        }
+        private static Dictionary<string, FileInfoWrapper> FindByAtribute(string param, Dictionary<string, FileInfoWrapper> source)
+        {
+            string name = GetParam(param, 'a');
+            var result = source.Where(n => Regex.Match(n.Value.Atributes.ToString(), name).Success).ToDictionary(k => k.Key, k => k.Value);
+            return result;
         }
         private static Dictionary<string, FileInfoWrapper> FindByName(string param, Dictionary<string, FileInfoWrapper> source)
         {
