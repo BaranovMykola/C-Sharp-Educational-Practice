@@ -13,7 +13,8 @@ namespace IOSystem
         private static string location = string.Empty;
         private static Dictionary<string, FileInfoWrapper> list = new Dictionary<string, FileInfoWrapper>();
         private static string help = string.Empty;
-
+        private delegate bool selector(KeyValuePair<string, FileInfoWrapper> pair);
+        private delegate bool RegexModifier(string full, string newStr);
         private static readonly Dictionary<string, string> fileConfiguration = new Dictionary<string, string>();
 
         static Program()
@@ -135,14 +136,20 @@ namespace IOSystem
                 if (!list.ContainsKey(fileInfo.Name))
                 {
                     Console.WriteLine(item);
-                    list.Add(fileInfo.Name, new FileInfoWrapper(item));
+                    int dot = fileInfo.Name.LastIndexOf('.');
+                    string s = fileInfo.Name.Substring(0, dot==-1 ? fileInfo.Name.Length : dot);
+                    list.Add(s, new FileInfoWrapper(item));
                 }
             }
 
         }
-        public static void Show(string sort)
+        public static void Show(string sort, Dictionary<string, FileInfoWrapper> data)
         {
-            var toSort = list.ToList<KeyValuePair<string, FileInfoWrapper>>();
+            if(data.Count == 0)
+            {
+                throw new InvalidDataException("The list is empty");
+            }
+            var toSort = data.ToList();
             if (Regex.Match(sort, "-d").Success)
             {
                 toSort.Sort((pair1, pair2) => pair1.Value.Directory.CompareTo(pair2.Value.Directory));
@@ -175,6 +182,11 @@ namespace IOSystem
         }
         public static void Remove(string key)
         {
+            if(string.IsNullOrEmpty(key))
+            {
+                list.Clear();
+                return;
+            }
             bool removed = list.Remove(key);
             string message = "removed successfully";
             if (!removed)
@@ -183,28 +195,48 @@ namespace IOSystem
             }
             Console.WriteLine("'{0}' {1}", key, message);
         }
-
         public static void Find(string param)
         {
-            //-n=1.jpg -t=.pdf -d=-y=2017
             Dictionary<string, FileInfoWrapper> result = list;
 
             string nameParam = Regex.Match(param, @"-n=[^\s]+").Value;
             if (!string.IsNullOrEmpty(nameParam))
             {
-                result = FindByName(nameParam, result);
+                string bareParam = param.Remove(0, param.IndexOf('=') + 1);
+                string paramN = GetParam(param, 'n');
+                bareParam = bareParam.Replace(paramN, string.Empty);
+                RegexModifier modifier = null;
+                if(bareParam == "-f")
+                {
+                    modifier = (f, s) => (f == s);
+                }
+                else if(bareParam != "-f" && !string.IsNullOrEmpty(bareParam))
+                {
+                    throw new ArgumentException("Unknown parameter modifier to -n=[regex]. Did you mean '-f'?");
+                }
+                else
+                {
+                    modifier = (f, s) => true;
+                }
+                result = FindBy(s =>
+                    {
+                        var match = Regex.Match(s.Key, GetParam(param, 'n'));
+                        return match.Success && modifier(match.Value, s.Key);
+                    }
+                    , result);
             }
 
             string extensionParam = Regex.Match(param, @"-e=[^\s]+").Value;
             if (!string.IsNullOrEmpty(extensionParam))
             {
-                result = FindByExtension(extensionParam, result);
+                result = FindBy(s => Regex.Match(s.Value.Extension, GetParam(extensionParam, 'e')).Success, result);
             }
 
             string atributeParam = Regex.Match(param, @"-a=[^\s]+").Value;
             if (!string.IsNullOrEmpty(atributeParam))
             {
-                result = FindByAtribute(atributeParam, result);
+                string name = GetParam(param, 'a');
+                result = FindBy((s => Regex.Match(s.Value.Atributes.ToString(), name).Success), result);
             }
 
             string dataParam = Regex.Match(param, @"-d=[\w.\-=]+").Value;
@@ -213,10 +245,7 @@ namespace IOSystem
                 result = FindByData(dataParam, result);
             }
 
-            foreach (var item in result)
-            {
-                Console.WriteLine("{0,30}\n{1}", item.Key, item.Value);
-            }
+            Show(string.Empty, result);
         }
         private static string ClearParam(string param)
         {
@@ -224,6 +253,12 @@ namespace IOSystem
             name = name.Remove(0, 1);
             return name;
         }
+        private static Dictionary<string, FileInfoWrapper> FindBy(selector s, Dictionary<string, FileInfoWrapper> source)
+        {
+            var result = source.Where(p => s(p)).ToDictionary(k => k.Key, k => k.Value);
+            return result;
+        }
+
         private static Dictionary<string, FileInfoWrapper> FindByAtribute(string param, Dictionary<string, FileInfoWrapper> source)
         {
             string name = GetParam(param, 'a');
@@ -242,6 +277,7 @@ namespace IOSystem
             var result = source.Where(n => Regex.Match(n.Value.Extension, type).Success).ToDictionary(k => k.Key, k => k.Value);
             return result;
         }
+
         private static Dictionary<string, FileInfoWrapper> FindByData(string param, Dictionary<string, FileInfoWrapper> source)
         {
             string bareParam = param.Remove(0, param.IndexOf('=')+1);
@@ -258,7 +294,6 @@ namespace IOSystem
                 .ToDictionary(s => s.Key, s => s.Value);
             return result;
         }
-
         private static string GetParam(string param, char key)
         {
             string result = Regex.Match(param, @"-" + key + @"=[^\s-]+").Value;
@@ -290,7 +325,7 @@ namespace IOSystem
                         Push(second);
                         break;
                     case "show":
-                        Show(second);
+                        Show(second, list);
                         break;
                     case "exit":
                         Exit();
@@ -300,6 +335,9 @@ namespace IOSystem
                         break;
                     case "find":
                         Find(second);
+                        break;
+                    case "clear":
+                        Console.Clear();
                         break;
                     default:
                         Console.WriteLine("Unknown command. Type 'help' for help");

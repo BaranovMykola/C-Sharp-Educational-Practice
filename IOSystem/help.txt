@@ -6,13 +6,16 @@ cd [arg] - Locate to [arg]
 	cd . - clear location
 pwd - Show location
 push [arg] - push file(s). Support regex
+remove - remove all files
 remove [arg] - remove file
 find [args] - find files matches parameters
 	[args]  -n=$name$ - name, support regex
+				-f (opt) - full match
 			-e=$extension$ - extension, support regex
 			-d=[args] - data
 				[args] -d=$day$ - day
 				[args] -m=$month$ - month
 				[args] -y=$year$ - year
 show (-d) - show file log (sorted by directory)
+clear - clear cosole
 exit - exits and save all information
