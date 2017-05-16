@@ -16,6 +16,6 @@ find [args] - find files matches parameters
 				[args] -d=$day$ - day
 				[args] -m=$month$ - month
 				[args] -y=$year$ - year
-show (-d) - show file log (sorted by directory)
+show [-d](opt) - show file log (sorted by directory)
 clear - clear cosole
 exit - exits and save all information

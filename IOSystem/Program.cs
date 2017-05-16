@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace IOSystem
 {
@@ -31,45 +32,24 @@ namespace IOSystem
                 Console.WriteLine("Error while reading config: {0}", error.Message);
             }
         }
-
-        private static void AppendLocation(string to)
-        {
-            string oldLocation = location.Clone() as string;
-            if (!string.IsNullOrEmpty(location))
-            {
-                location += @"\";
-            }
-            location += to;
-            DirectoryInfo dirInfo = new DirectoryInfo(location);
-            if (!dirInfo.Exists && to != "." || Regex.Match(to, @"(../)|(\.){2,}").Success)
-            {
-                location = oldLocation;
-                throw new System.IO.DirectoryNotFoundException(string.Format("{0} not found", (location + @"\" + to)));
-            }
-        }
+        #region Configuration
         private static void LoadLog()
         {
-            StreamReader sw = new StreamReader(fileConfiguration["fileInfoLog"]);
-            string line;
-            while((line = sw.ReadLine()) != null)
+            using (var loader = File.Open(fileConfiguration["fileInfoLog"], FileMode.Open))
             {
-                var rawData = line.Split(' ');
-                FileInfo fileInfo = new FileInfo(rawData[1]);
-                if (fileInfo.Exists)
-                {
-                    list.Add(rawData[0], new FileInfoWrapper(rawData[1]));
-                }
+                var xml = new XmlSerializer(typeof(SerializableKeyValuePair<string, FileInfoWrapper>[]));
+                var obj = xml.Deserialize(loader);
+                list = (obj as SerializableKeyValuePair<string, FileInfoWrapper>[]).ToDictionary(s => s.Key, s => s.Value);
             }
-            sw.Close();
         }
         private static void SaveLog()
         {
-            StreamWriter saver = new StreamWriter(fileConfiguration["fileInfoLog"]);
-            foreach (var item in list)
+            File.WriteAllText(fileConfiguration["fileInfoLog"], string.Empty);
+            using (var saver = File.Open(fileConfiguration["fileInfoLog"], FileMode.OpenOrCreate))
             {
-                saver.Write(string.Format("{0} {1}\n", item.Key, item.Value.FullName));
+                var xml = new XmlSerializer(typeof(SerializableKeyValuePair<string, FileInfoWrapper>[]));
+                xml.Serialize(saver, list.Select( s => new SerializableKeyValuePair<string, FileInfoWrapper>(s.Key, s.Value)).ToArray());
             }
-            saver.Close();
         }
         private static void LoadLocation()
         {
@@ -104,7 +84,23 @@ namespace IOSystem
             }
             while (line != null);
         }
-
+        #endregion
+        #region Commands body
+        private static void AppendLocation(string to)
+        {
+            string oldLocation = location.Clone() as string;
+            if (!string.IsNullOrEmpty(location))
+            {
+                location += @"\";
+            }
+            location += to;
+            DirectoryInfo dirInfo = new DirectoryInfo(location);
+            if (!dirInfo.Exists && to != "." || Regex.Match(to, @"(../)|(\.){2,}").Success)
+            {
+                location = oldLocation;
+                throw new System.IO.DirectoryNotFoundException(string.Format("{0} not found", (location + @"\" + to)));
+            }
+        }
         public static void Cd(string to)
         {
             if (!Up(to))
@@ -132,20 +128,27 @@ namespace IOSystem
             var files = Directory.GetFiles(location, file, System.IO.SearchOption.TopDirectoryOnly);
             foreach (var item in files)
             {
-                FileInfo fileInfo = new FileInfo(item);
-                if (!list.ContainsKey(fileInfo.Name))
+                try
                 {
-                    Console.WriteLine(item);
-                    int dot = fileInfo.Name.LastIndexOf('.');
-                    string s = fileInfo.Name.Substring(0, dot==-1 ? fileInfo.Name.Length : dot);
-                    list.Add(s, new FileInfoWrapper(item));
+                    FileInfo fileInfo = new FileInfo(item);
+                    if (!list.ContainsKey(fileInfo.Name))
+                    {
+                        int dot = fileInfo.Name.LastIndexOf('.');
+                        string s = fileInfo.Name.Substring(0, dot == -1 ? fileInfo.Name.Length : dot);
+                        list.Add(s, new FileInfoWrapper(item));
+                        Console.WriteLine(item);
+                    }
+                }
+                catch (Exception)
+                {
+                    continue;
                 }
             }
 
         }
         public static void Show(string sort, Dictionary<string, FileInfoWrapper> data)
         {
-            if(data.Count == 0)
+            if (data.Count == 0)
             {
                 throw new InvalidDataException("The list is empty");
             }
@@ -182,7 +185,7 @@ namespace IOSystem
         }
         public static void Remove(string key)
         {
-            if(string.IsNullOrEmpty(key))
+            if (string.IsNullOrEmpty(key))
             {
                 list.Clear();
                 return;
@@ -206,11 +209,11 @@ namespace IOSystem
                 string paramN = GetParam(param, 'n');
                 bareParam = bareParam.Replace(paramN, string.Empty);
                 RegexModifier modifier = null;
-                if(bareParam == "-f")
+                if (bareParam == "-f")
                 {
                     modifier = (f, s) => (f == s);
                 }
-                else if(bareParam != "-f" && !string.IsNullOrEmpty(bareParam))
+                else if (bareParam != "-f" && !string.IsNullOrEmpty(bareParam))
                 {
                     throw new ArgumentException("Unknown parameter modifier to -n=[regex]. Did you mean '-f'?");
                 }
@@ -236,11 +239,11 @@ namespace IOSystem
             if (!string.IsNullOrEmpty(atributeParam))
             {
                 string name = GetParam(param, 'a');
-                result = FindBy((s => Regex.Match(s.Value.Atributes.ToString(), name).Success), result);
+                result = FindBy((s => Regex.Match(s.Value.Atributes.ToString() + ",", string.Format(@"({0},)", name)).Success), result);
             }
 
             string dataParam = Regex.Match(param, @"-d=[\w.\-=]+").Value;
-            if(!string.IsNullOrEmpty(dataParam))
+            if (!string.IsNullOrEmpty(dataParam))
             {
                 result = FindByData(dataParam, result);
             }
@@ -258,29 +261,9 @@ namespace IOSystem
             var result = source.Where(p => s(p)).ToDictionary(k => k.Key, k => k.Value);
             return result;
         }
-
-        private static Dictionary<string, FileInfoWrapper> FindByAtribute(string param, Dictionary<string, FileInfoWrapper> source)
-        {
-            string name = GetParam(param, 'a');
-            var result = source.Where(n => Regex.Match(n.Value.Atributes.ToString(), name).Success).ToDictionary(k => k.Key, k => k.Value);
-            return result;
-        }
-        private static Dictionary<string, FileInfoWrapper> FindByName(string param, Dictionary<string, FileInfoWrapper> source)
-        {
-            string name = GetParam(param, 'n');
-            var result = source.Where(n => Regex.Match(n.Key, name).Success).ToDictionary(k => k.Key, k => k.Value);
-            return result;
-        }
-        private static Dictionary<string, FileInfoWrapper> FindByExtension(string param, Dictionary<string, FileInfoWrapper> source)
-        {
-            string type = GetParam(param, 'e');
-            var result = source.Where(n => Regex.Match(n.Value.Extension, type).Success).ToDictionary(k => k.Key, k => k.Value);
-            return result;
-        }
-
         private static Dictionary<string, FileInfoWrapper> FindByData(string param, Dictionary<string, FileInfoWrapper> source)
         {
-            string bareParam = param.Remove(0, param.IndexOf('=')+1);
+            string bareParam = param.Remove(0, param.IndexOf('=') + 1);
             int year;
             int month;
             int day;
@@ -300,7 +283,7 @@ namespace IOSystem
             string bareResult = result.Remove(0, result.IndexOf('=') + 1);
             return bareResult;
         }
-
+        #endregion
         public static void Command()
         {
             Console.Write("{0} >> ", location);
@@ -356,6 +339,9 @@ namespace IOSystem
 
         static void Main(string[] args)
         {
+            Console.WriteLine("IO storage system:");
+            Console.WriteLine();
+            Console.WriteLine();
             Command();
             Console.ReadKey();
         }
