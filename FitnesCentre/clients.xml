@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<ArrayOfClient xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Client>
+    <Id>1476381319</Id>
+  </Client>
+  <Client>
+    <Id>1619417491</Id>
+  </Client>
+  <Client>
+    <Id>1022824573</Id>
+  </Client>
+  <Client>
+    <Id>376138305</Id>
+  </Client>
+  <Client>
+    <Id>154197856</Id>
+  </Client>
+  <Client>
+    <Id>556397398</Id>
+  </Client>
+</ArrayOfClient>
